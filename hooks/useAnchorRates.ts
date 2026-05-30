@@ -19,12 +19,15 @@ function useDocumentVisible(): boolean {
   return useSyncExternalStore(subscribeToVisibilityChange, getVisibilitySnapshot, () => true);
 }
 
-async function fetcher([, corridorId, amount]: [string, string, string]): Promise<RateComparison> {
+async function fetcher(
+  [, corridorId, amount]: [string, string, string],
+  { signal }: { signal?: AbortSignal } = {}
+): Promise<RateComparison> {
   const url = new URL('/api/rates', window.location.origin);
   url.searchParams.set('corridor', corridorId);
   url.searchParams.set('amount', amount);
 
-  const res = await fetch(url.toString());
+  const res = await fetch(url.toString(), { signal });
 
   if (!res.ok) {
     const err = await res.json().catch(() => ({}));
