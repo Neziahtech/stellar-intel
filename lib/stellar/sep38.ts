@@ -465,3 +465,50 @@ export async function postSep38Quote(
 
   return parseQuote((await res.json()) as Record<string, unknown>);
 }
+
+// ─── Quote cancellation endpoint ─────────────────────────────────────────────
+
+/**
+ * Cancels an unused firm quote before it expires via DELETE /quote/:id,
+ * authenticated with a SEP-10 JWT.
+ *
+ * Idempotent: 404/410 responses (already cancelled or expired) are treated as
+ * a successful no-op so a repeat cancellation does not throw.
+ */
+export async function deleteSep38Quote(
+  quoteServer: string,
+  id: string,
+  jwt: string
+): Promise<void> {
+  const base = normalizeQuoteServer(quoteServer);
+
+  if (!id) throw new Sep38ParseError('A quote id is required to cancel a quote');
+  if (!jwt) throw new Sep38ParseError('A SEP-10 JWT is required to cancel a quote');
+
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+
+  let res: Response;
+  try {
+    res = await fetch(`${base}/quote/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: { Authorization: `Bearer ${jwt}` },
+      signal: controller.signal,
+    });
+  } catch (err) {
+    if ((err as Error).name === 'AbortError') {
+      throw new Error(`SEP-38 /quote cancellation to ${base} timed out after 10 seconds`);
+    }
+    throw err;
+  } finally {
+    clearTimeout(timeout);
+  }
+
+  // Idempotent: already-cancelled or expired quotes return 404/410 — treat as success.
+  if (res.ok || res.status === 404 || res.status === 410) {
+    return;
+  }
+
+  throw new Error(`HTTP ${res.status} from ${base} SEP-38 /quote cancellation`);
+}
+
