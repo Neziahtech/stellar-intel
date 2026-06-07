@@ -33,6 +33,7 @@ export interface AnchorRate {
   updatedAt: Date;
   /** Discriminates the origin of the rate data. */
   source: 'sep38' | 'sep24-fee' | 'unavailable';
+  expiresAt?: Date | undefined;
   /**
    * SEP-38 firm quote id, when this rate originated from a quote server.
    * Two anchors that proxy the same liquidity pool can return the same id;
@@ -47,6 +48,7 @@ export interface AnchorRate {
 export interface RateComparison {
   corridorId: string;
   rates: AnchorRate[];
+  pending: { anchorId: string; anchorName: string }[]; // Anchors still resolving
   bestRateId: string; // anchorId of the anchor with the highest totalReceived
 }
 
