@@ -177,9 +177,7 @@ describe('resolveAnchor', () => {
   });
 
   it('bypasses the cache when bypassCache is set (nightly validator)', async () => {
-    const spy = vi
-      .spyOn(StellarToml.Resolver, 'resolve')
-      .mockResolvedValue(VALID_TOML as never);
+    const spy = vi.spyOn(StellarToml.Resolver, 'resolve').mockResolvedValue(VALID_TOML as never);
 
     // First resolve populates the cache.
     await resolveAnchor('cowrie.exchange');
