@@ -55,12 +55,9 @@ export const ANCHORS: Anchor[] = [
 
 export const KNOWN_ANCHORS = ANCHORS;
 
-export const ANCHOR_HOME_DOMAINS: Record<string, string> = {
-  moneygram: 'stellar.moneygram.com',
-  cowrie: 'cowrie.exchange',
-  anclap: 'anclap.com',
-  ntokens: 'ntokens.com',
-} as const;
+export const ANCHOR_HOME_DOMAINS: Record<string, string> = Object.fromEntries(
+  ANCHORS.map((anchor) => [anchor.id, anchor.homeDomain])
+);
 
 // ─── Corridors ────────────────────────────────────────────────────────────────
 
