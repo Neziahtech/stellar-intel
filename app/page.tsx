@@ -1,28 +1,39 @@
 import Link from 'next/link';
-import { ArrowDownRight, Globe } from 'lucide-react';
+import { ArrowDownRight, Globe, Landmark, Route } from 'lucide-react';
 import { Card } from '@/components/ui/Card';
 import { Hero } from '@/components/landing/Hero';
 import { StatBar } from '@/components/landing/StatBar';
 import { CorridorStrip } from '@/components/landing/CorridorStrip';
+import { ComparisonTeaser } from '@/components/landing/ComparisonTeaser';
 import { Faq } from '@/components/landing/Faq';
-import { KNOWN_ANCHORS } from '@/constants';
+import { registryStats } from '@/constants';
 
 export default function HomePage() {
+  const stats = registryStats();
   return (
     <div className="space-y-8 sm:space-y-16">
       {/* Hero */}
       <Hero />
 
-      {/* Stat bar */}
-      <StatBar stats={[{ icon: Globe, value: KNOWN_ANCHORS.length, label: 'Anchors tracked' }]} />
+      {/* Stat bar — counts derived from the anchor registry */}
+      <StatBar
+        stats={[
+          { icon: Landmark, value: stats.anchors, label: 'Anchors tracked' },
+          { icon: Route, value: stats.corridors, label: 'Corridors live' },
+          { icon: Globe, value: stats.countries, label: 'Countries reachable' },
+        ]}
+      />
 
       {/* Supported corridors */}
       <CorridorStrip />
 
+      {/* Comparison teaser */}
+      <ComparisonTeaser />
+
       {/* Module card */}
       <section>
         <h2 className="mb-6 text-xl font-semibold text-gray-900 dark:text-white">
-          Start transacting
+          Start executing
         </h2>
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <Link href="/offramp">
@@ -32,7 +43,7 @@ export default function HomePage() {
               </div>
               <h3 className="mb-2 font-semibold text-gray-900 dark:text-white">Off-ramp</h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                Execute USDC off-ramps across Stellar anchors by country and corridor.
+                Route a USDC off-ramp to the cheapest anchor, by country and corridor.
               </p>
             </Card>
           </Link>
@@ -47,17 +58,17 @@ export default function HomePage() {
             {
               step: '01',
               title: 'Pick your corridor',
-              body: 'Select the country and amount you want to withdraw.',
+              body: 'Choose a destination country and the USDC amount to withdraw.',
             },
             {
               step: '02',
-              title: 'Compare live rates',
-              body: 'We fetch real SEP-24 rates from all supported Stellar anchors.',
+              title: 'Compare live quotes',
+              body: 'We pull live SEP-38 quotes from every integrated anchor.',
             },
             {
               step: '03',
               title: 'Execute in one click',
-              body: 'Select the best option and execute directly on Stellar via Freighter.',
+              body: 'Sign once and settle directly on Stellar with Freighter — non-custodial.',
             },
           ].map(({ step, title, body }) => (
             <div key={step} className="flex gap-4">
