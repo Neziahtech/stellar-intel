@@ -65,6 +65,7 @@ describe('RatePreview', () => {
       data: undefined,
       error: undefined,
       isLoading: true,
+      isValidating: true,
       mutate: mockMutate,
     } as ReturnType<typeof swr.default>);
 
@@ -79,6 +80,7 @@ describe('RatePreview', () => {
       data: undefined,
       error: new Error('Failed to fetch'),
       isLoading: false,
+      isValidating: false,
       mutate: mockMutate,
     } as ReturnType<typeof swr.default>);
 
@@ -93,6 +95,7 @@ describe('RatePreview', () => {
       data: undefined,
       error: new Error('Failed to fetch'),
       isLoading: false,
+      isValidating: false,
       mutate: mockMutate,
     } as ReturnType<typeof swr.default>);
 
@@ -107,6 +110,7 @@ describe('RatePreview', () => {
       data: { ...mockSnapshot, corridors: [] },
       error: undefined,
       isLoading: false,
+      isValidating: false,
       mutate: mockMutate,
     } as ReturnType<typeof swr.default>);
 
@@ -121,6 +125,7 @@ describe('RatePreview', () => {
       data: emptySnapshot,
       error: undefined,
       isLoading: false,
+      isValidating: false,
       mutate: mockMutate,
     } as ReturnType<typeof swr.default>);
 
@@ -135,13 +140,14 @@ describe('RatePreview', () => {
       data: mockSnapshot,
       error: undefined,
       isLoading: false,
+      isValidating: false,
       mutate: mockMutate,
     } as ReturnType<typeof swr.default>);
 
     render(<RatePreview />);
     expect(screen.getByText('USDC/NGN')).toBeInTheDocument();
     expect(screen.getByText('Cowrie Exchange')).toBeInTheDocument();
-    expect(screen.getByText(/154840 NGN/)).toBeInTheDocument();
+    expect(screen.getByText(/154,840 NGN/)).toBeInTheDocument();
     expect(screen.getByText(/1,580 NGN/)).toBeInTheDocument();
   });
 });
